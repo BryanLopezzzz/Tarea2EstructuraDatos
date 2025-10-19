@@ -32,9 +32,11 @@ public class Codificador {
     }
 
     public void mostrarCodigos(List<ParCaracterFrecuencia> tablaFrecuencias) {
-        System.out.println("\n=== CÓDIGOS HUFFMAN ===");
-        System.out.println("Símbolo\t\tFrecuencia\tCódigo\t\tBits");
-        System.out.println("-------\t\t----------\t------\t\t----");
+        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+        System.out.println("║                    CÓDIGOS HUFFMAN                           ║");
+        System.out.println("╠═══════════════╦════════════╦══════════════════╦══════════════╣");
+        System.out.println("║    Símbolo    ║ Frecuencia ║      Código      ║     Bits     ║");
+        System.out.println("╠═══════════════╬════════════╬══════════════════╬══════════════╣");
 
         ordenarPorLongitud();
 
@@ -45,9 +47,11 @@ public class Codificador {
             int frecuencia = buscarFrecuencia(simbolo, tablaFrecuencias);
 
             String simboloMostrar = obtenerRepresentacionSimbolo(simbolo);
-            System.out.printf("%s\t\t%d\t\t%s\t\t%d\n",
+            System.out.printf("║ %-13s ║    %4d    ║   %-12s   ║      %2d      ║%n",
                     simboloMostrar, frecuencia, codigo, codigo.length());
         }
+
+        System.out.println("╚═══════════════╩════════════╩══════════════════╩══════════════╝");
     }
 
     private int buscarFrecuencia(char caracter, List<ParCaracterFrecuencia> tablaFrecuencias) {

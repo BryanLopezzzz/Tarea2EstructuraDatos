@@ -39,12 +39,13 @@ public class AnalizadorFrecuencias {
     }
 
     public void mostrarTabla() {
-        System.out.println("\n=== TABLA DE FRECUENCIAS ===");
-        System.out.println("Símbolo\t\tFrecuencia\tPorcentaje");
-        System.out.println("-------\t\t----------\t----------");
+        System.out.println("\n╔════════════════════════════════════════════════════╗");
+        System.out.println("║          TABLA DE FRECUENCIAS                      ║");
+        System.out.println("╠═══════════════╦════════════╦═══════════════════════╣");
+        System.out.println("║    Símbolo    ║ Frecuencia ║      Porcentaje       ║");
+        System.out.println("╠═══════════════╬════════════╬═══════════════════════╣");
 
         int total = texto.length();
-
         ordenarPorFrecuencia();
 
         for (ParCaracterFrecuencia par : tablaFrecuencias) {
@@ -53,8 +54,11 @@ public class AnalizadorFrecuencias {
             double porcentaje = (frecuencia * 100.0) / total;
 
             String simboloMostrar = obtenerRepresentacionSimbolo(simbolo);
-            System.out.printf("%s\t\t%d\t\t%.2f%%\n", simboloMostrar, frecuencia, porcentaje);
+            System.out.printf("║ %-13s ║    %4d    ║        %6.2f%%        ║%n",
+                    simboloMostrar, frecuencia, porcentaje);
         }
+
+        System.out.println("╚═══════════════╩════════════╩═══════════════════════╝");
     }
 
     private void ordenarPorFrecuencia() {

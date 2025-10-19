@@ -68,48 +68,8 @@ public class CompresorHuffman {
         stats.mostrarEstadisticasDescompresion(tiempoFin - tiempoInicio);
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        CompresorHuffman compresor = new CompresorHuffman();
-
-        try {
-            System.out.println("=== COMPRESOR/DESCOMPRESOR HUFFMAN ===\n");
-            System.out.println("1. Comprimir archivo");
-            System.out.println("2. Descomprimir archivo");
-            System.out.print("\nSeleccione una opción: ");
-            int opcion = scanner.nextInt();
-            scanner.nextLine();
-
-            if (opcion == 1) {
-                System.out.print("Ingrese la ruta del archivo a comprimir: ");
-                String rutaEntrada = scanner.nextLine();
-
-                System.out.print("Ingrese la ruta del archivo comprimido (ej: salida.huf): ");
-                String rutaSalida = scanner.nextLine();
-
-                compresor.comprimir(rutaEntrada, rutaSalida);
-                System.out.println("\n¡Compresión completada exitosamente!");
-
-            } else if (opcion == 2) {
-                System.out.print("Ingrese la ruta del archivo comprimido: ");
-                String rutaComprimido = scanner.nextLine();
-
-                System.out.print("Ingrese la ruta del archivo de salida: ");
-                String rutaSalida = scanner.nextLine();
-
-                compresor.descomprimir(rutaComprimido, rutaSalida);
-                System.out.println("\nDescompresión completada exitosamente!");
-                System.out.println("Archivo guardado en: " + rutaSalida);
-
-            } else {
-                System.out.println("Opción no válida.");
-            }
-
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            scanner.close();
-        }
+    public String getTextoOriginal() {
+        return textoOriginal;
     }
+
 }
