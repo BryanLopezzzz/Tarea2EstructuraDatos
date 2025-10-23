@@ -43,9 +43,9 @@ public class ArbolHuffman {
         tablaCodigos.clear();
         if (raiz != null) {
             if (raiz.esHoja()) {
-                tablaCodigos.add(new ParCaracterCodigo(raiz.getCaracter(), "0"));
+                tablaCodigos.add(new ParCaracterCodigo(raiz.getCaracter(), "0", raiz.getFrecuencia()));
             } else if (raiz.getIzquierdo() != null && raiz.getIzquierdo().esHoja() && raiz.getDerecho() == null) {
-                tablaCodigos.add(new ParCaracterCodigo(raiz.getIzquierdo().getCaracter(), "0"));
+                tablaCodigos.add(new ParCaracterCodigo(raiz.getIzquierdo().getCaracter(), "0",raiz.getFrecuencia()));
             } else {
                 generarCodigosRecursivo(raiz, "");
             }
@@ -57,7 +57,7 @@ public class ArbolHuffman {
 
         if (nodo.esHoja()) {
             String codigoFinal = codigo.isEmpty() ? "0" : codigo;
-            tablaCodigos.add(new ParCaracterCodigo(nodo.getCaracter(), codigoFinal));
+            tablaCodigos.add(new ParCaracterCodigo(nodo.getCaracter(), codigoFinal, nodo.getFrecuencia()));
             return;
         }
 

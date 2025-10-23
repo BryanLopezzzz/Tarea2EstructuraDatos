@@ -18,7 +18,7 @@ public class EmpaquetadorBits {
             for (int i = 0; i < tablaCodigos.size(); i++) {
                 ParCaracterCodigo par = tablaCodigos.get(i);
                 salida.writeChar(par.getCaracter());
-                salida.writeUTF(par.getCodigo());
+                salida.writeInt(par.getFrecuencia());
             }
 
             salida.writeInt(longitudTextoOriginal);
@@ -53,8 +53,8 @@ public class EmpaquetadorBits {
 
             for (int i = 0; i < numSimbolos; i++) {
                 char simbolo = entrada.readChar();
-                String codigo = entrada.readUTF();
-                tablaCodigos.add(new ParCaracterCodigo(simbolo, codigo));
+                int frecuencia = entrada.readInt();
+                tablaCodigos.add(new ParCaracterCodigo(simbolo, "", frecuencia));
             }
 
             int longitudOriginal = entrada.readInt();

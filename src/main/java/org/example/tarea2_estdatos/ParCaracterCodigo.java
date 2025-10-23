@@ -3,10 +3,12 @@ package org.example.tarea2_estdatos;
 public class ParCaracterCodigo {
     private char caracter;
     private String codigo;
+    private int frecuencia;
 
-    public ParCaracterCodigo(char caracter, String codigo) {
+    public ParCaracterCodigo(char caracter, String codigo, int frecuencia) {
         this.caracter = caracter;
         this.codigo = codigo;
+        this.frecuencia = frecuencia;
     }
 
     public char getCaracter() {
@@ -15,5 +17,9 @@ public class ParCaracterCodigo {
 
     public String getCodigo() {
         return codigo;
+    }
+
+    public int getFrecuencia() {
+        return frecuencia;
     }
 }

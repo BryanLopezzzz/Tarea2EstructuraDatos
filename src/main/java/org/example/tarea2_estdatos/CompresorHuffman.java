@@ -1,6 +1,8 @@
 package org.example.tarea2_estdatos;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class CompresorHuffman {
@@ -55,8 +57,17 @@ public class CompresorHuffman {
         EmpaquetadorBits empaquetador = new EmpaquetadorBits();
         EmpaquetadorBits.DatosDescompresion datos = empaquetador.leerArchivoComprimido(rutaComprimido);
 
+        System.out.println("Reconstruyendo árbol de Huffman...");
+        List<ParCaracterFrecuencia> frecuencias = new ArrayList<>();
+        for (ParCaracterCodigo pcc : datos.getTablaCodigos()) {
+            frecuencias.add(new ParCaracterFrecuencia(pcc.getCaracter(), pcc.getFrecuencia()));
+        }
+
+        ArbolHuffman arbol = new ArbolHuffman();
+        arbol.construirArbol(frecuencias);
+
         System.out.println("Decodificando bits...");
-        Decodificador decodificador = new Decodificador(datos.getTablaCodigos());
+        Decodificador decodificador = new Decodificador(arbol.getTablaCodigos());
         String textoDescomprimido = decodificador.decodificarBits(datos.getBits());
 
         System.out.println("Guardando archivo descomprimido...");
