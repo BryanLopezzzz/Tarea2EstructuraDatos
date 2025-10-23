@@ -2,6 +2,7 @@ package org.example.tarea2_estdatos;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 
 public class EmpaquetadorBits {
 
@@ -17,8 +18,16 @@ public class EmpaquetadorBits {
 
             for (int i = 0; i < tablaCodigos.size(); i++) {
                 ParCaracterCodigo par = tablaCodigos.get(i);
-                salida.writeChar(par.getCaracter());
-                salida.writeInt(par.getFrecuencia());
+                String caracterStr = String.valueOf(par.getCaracter());
+                byte[] bytesCaracter = caracterStr.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+
+                salida.writeInt(bytesCaracter.length);
+
+                salida.write(bytesCaracter);
+
+                salida.writeInt(par.getCodigo().length());
+
+                salida.writeUTF(par.getCodigo());
             }
 
             salida.writeInt(longitudTextoOriginal);
@@ -52,9 +61,19 @@ public class EmpaquetadorBits {
             int numSimbolos = entrada.readInt();
 
             for (int i = 0; i < numSimbolos; i++) {
-                char simbolo = entrada.readChar();
-                int frecuencia = entrada.readInt();
-                tablaCodigos.add(new ParCaracterCodigo(simbolo, "", frecuencia));
+                int longitudBytes = entrada.readInt();
+
+                byte[] bytesCaracter = new byte[longitudBytes];
+                entrada.readFully(bytesCaracter);
+
+                String caracterStr = new String(bytesCaracter, java.nio.charset.StandardCharsets.UTF_8);
+                char simbolo = caracterStr.charAt(0);
+
+                int longitudCodigo = entrada.readInt();
+
+                String codigo = entrada.readUTF();
+
+                tablaCodigos.add(new ParCaracterCodigo(simbolo, codigo, 0));
             }
 
             int longitudOriginal = entrada.readInt();
