@@ -83,7 +83,7 @@ public class Main {
         System.out.print("\nIngrese la ruta del archivo a comprimir: ");
         String rutaEntrada = scanner.nextLine().trim();
 
-        System.out.print("Ingrese la ruta del archivo comprimido (ej: salida.huf): ");
+        System.out.print("Ingrese la ruta del archivo comprimido: ");
         String rutaSalida = scanner.nextLine().trim();
 
         compresor.comprimir(rutaEntrada, rutaSalida);
