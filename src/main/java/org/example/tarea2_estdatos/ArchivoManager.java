@@ -3,7 +3,7 @@ package org.example.tarea2_estdatos;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-public class ManejadorArchivos {
+public class ArchivoManager {
 
     public String leerArchivoTexto(String rutaArchivo) throws IOException {
         StringBuilder contenido = new StringBuilder();
