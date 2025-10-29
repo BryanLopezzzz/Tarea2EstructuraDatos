@@ -9,29 +9,41 @@ public class Decodificador {
         this.tablaCodigos = tablaCodigos;
     }
 
-    public String decodificarBits(String bits) {
-        StringBuilder textoDescodificado = new StringBuilder();
+    public byte[] decodificarBits(byte[] bits) {
+        ArrayList<Byte> textoDescodificado = new ArrayList<>();
         StringBuilder codigoActual = new StringBuilder();
 
-        for (int i = 0; i < bits.length(); i++) {
-            codigoActual.append(bits.charAt(i));
+        for (int i = 0; i < bits.length; i++) {
+            byte b = bits[i];
 
-            char caracter = buscarCaracter(codigoActual.toString());
-            if (caracter != '\0') {
-                textoDescodificado.append(caracter);
-                codigoActual.setLength(0);
+            for (int j = 7; j >= 0; j--) {
+                int bit = (b >> j) & 1;
+                codigoActual.append(bit == 1 ? '1' : '0');
+
+                byte caracter = buscarCaracter(codigoActual);
+                if (caracter != 0) {
+                    textoDescodificado.add(caracter);
+                    codigoActual.setLength(0);
+                }
             }
         }
 
-        return textoDescodificado.toString();
+        byte[] resultado = new byte[textoDescodificado.size()];
+        for (int i = 0; i < textoDescodificado.size(); i++) {
+            resultado[i] = textoDescodificado.get(i);
+        }
+
+        return resultado;
     }
 
-    private char buscarCaracter(String codigo) {
+    private byte buscarCaracter(StringBuilder codigo) {
         for (int i = 0; i < tablaCodigos.size(); i++) {
-            if (tablaCodigos.get(i).getCodigo().equals(codigo)) {
-                return tablaCodigos.get(i).getCaracter();
+            ParCaracterCodigo par = tablaCodigos.get(i);
+            String codigoPar = par.getCodigo();
+            if (codigoPar.equals(codigo.toString())) {
+                return (byte) par.getCaracter();
             }
         }
-        return '\0';
+        return 0;
     }
 }

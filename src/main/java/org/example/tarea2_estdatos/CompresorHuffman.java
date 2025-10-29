@@ -29,15 +29,17 @@ public class CompresorHuffman {
         Codificador codificador = new Codificador(arbol.getTablaCodigos());
         codificador.mostrarCodigos(analizador.getTablaFrecuencias());
 
-        System.out.println("\nCodificando texto");
-        String bitsCodificados = codificador.codificarTexto(textoOriginal);
+        System.out.println("\nCodificando texto...");
+        int[] numBits = new int[1];
+        byte[] bytesCodificados = codificador.codificarTextoABytes(textoOriginal, numBits);
 
-        System.out.println("Empaquetando bits y guardando archivo");
+        System.out.println("Empaquetando bits y guardando archivo...");
         EmpaquetadorBits empaquetador = new EmpaquetadorBits();
         empaquetador.escribirArchivoComprimido(
                 rutaSalida,
                 arbol.getTablaCodigos(),
-                bitsCodificados,
+                bytesCodificados,
+                numBits[0],
                 textoOriginal.length()
         );
 
@@ -50,14 +52,13 @@ public class CompresorHuffman {
     public void descomprimir(String rutaComprimido, String rutaSalida) throws IOException {
         long tiempoInicio = System.currentTimeMillis();
 
-        System.out.println("\nLeyendo archivo comprimido");
+        System.out.println("\nLeyendo archivo comprimido...");
         EmpaquetadorBits empaquetador = new EmpaquetadorBits();
         EmpaquetadorBits.DatosDescompresion datos = empaquetador.leerArchivoComprimido(rutaComprimido);
 
-
-        System.out.println("Decodificando bits");
+        System.out.println("Decodificando bits...");
         Decodificador decodificador = new Decodificador(datos.getTablaCodigos());
-        String textoDescomprimido = decodificador.decodificarBits(datos.getBits());
+        byte[] textoDescomprimido = decodificador.decodificarBits(datos.getBits());
 
         System.out.println("Guardando archivo descomprimido...");
         archivoManager.escribirArchivoTexto(rutaSalida, textoDescomprimido);

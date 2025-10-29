@@ -10,16 +10,22 @@ public class Codificador {
         this.tablaCodigos = tablaCodigos;
     }
 
-    public String codificarTexto(String texto) {
-        StringBuilder bitsCodificados = new StringBuilder();
+    public byte[] codificarTextoABytes(String texto, int[] numBitsOut) {
+        Bit bitBuffer = new Bit();
+
         for (int i = 0; i < texto.length(); i++) {
             char c = texto.charAt(i);
             String codigo = buscarCodigo(c);
             if (codigo != null) {
-                bitsCodificados.append(codigo);
+                for (int j = 0; j < codigo.length(); j++) {
+                    bitBuffer.escribirBit(codigo.charAt(j) == '1' ? 1 : 0);
+                }
             }
         }
-        return bitsCodificados.toString();
+
+        bitBuffer.completar();
+        numBitsOut[0] = bitBuffer.obtenerTotalBits();
+        return bitBuffer.obtenerBytes();
     }
 
     private String buscarCodigo(char caracter) {
@@ -47,19 +53,12 @@ public class Codificador {
             int frecuencia = buscarFrecuencia(simbolo, tablaFrecuencias);
 
             String simboloMostrar = obtenerRepresentacionSimbolo(simbolo);
-            String barraProgreso = generarBarraProgreso(codigo.length());
 
             System.out.printf("│  %-10s  │    %5d    │  %-12s  │     %2d     │%n",
                     simboloMostrar, frecuencia, codigo, codigo.length());
         }
 
         System.out.println("└──────────────┴─────────────┴────────────────┴────────────┘");
-    }
-
-    private String generarBarraProgreso(int longitud) {
-        int maxBarra = 10;
-        int filled = Math.min(longitud, maxBarra);
-        return "█".repeat(filled) + "░".repeat(maxBarra - filled);
     }
 
     private int buscarFrecuencia(char caracter, List<ParCaracterFrecuencia> tablaFrecuencias) {

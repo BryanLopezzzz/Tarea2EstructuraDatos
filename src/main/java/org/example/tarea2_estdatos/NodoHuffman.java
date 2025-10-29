@@ -3,12 +3,12 @@ package org.example.tarea2_estdatos;
 import java.io.Serializable;
 
 public class NodoHuffman implements Serializable {
-    private char caracter;
+    private int caracter;
     private int frecuencia;
     private NodoHuffman izquierdo;
     private NodoHuffman derecho;
 
-    public NodoHuffman(char caracter, int frecuencia) {
+    public NodoHuffman(int caracter, int frecuencia) {
         this.caracter = caracter;
         this.frecuencia = frecuencia;
         this.izquierdo = null;
@@ -16,7 +16,7 @@ public class NodoHuffman implements Serializable {
     }
 
     public NodoHuffman(int frecuencia, NodoHuffman izquierdo, NodoHuffman derecho) {
-        this.caracter = '\0';
+        this.caracter = -1;
         this.frecuencia = frecuencia;
         this.izquierdo = izquierdo;
         this.derecho = derecho;
@@ -26,7 +26,7 @@ public class NodoHuffman implements Serializable {
         return izquierdo == null && derecho == null;
     }
 
-    public char getCaracter() {
+    public int getCaracter() {
         return caracter;
     }
 

@@ -15,23 +15,22 @@ public class AnalizadorFrecuencias {
     public void calcularFrecuencias() {
         tablaFrecuencias.clear();
 
-        for (int i = 0; i < texto.length(); i++) {
-            char c = texto.charAt(i);
+        texto.codePoints().forEach(cp -> {
             boolean encontrado = false;
 
             for (int j = 0; j < tablaFrecuencias.size(); j++) {
-                if (tablaFrecuencias.get(j).getCaracter() == c) {
+                if (tablaFrecuencias.get(j).getCaracter() == cp) {
                     int nuevaFrecuencia = tablaFrecuencias.get(j).getFrecuencia() + 1;
-                    tablaFrecuencias.set(j, new ParCaracterFrecuencia(c, nuevaFrecuencia));
+                    tablaFrecuencias.set(j, new ParCaracterFrecuencia((char) cp, nuevaFrecuencia));
                     encontrado = true;
                     break;
                 }
             }
 
             if (!encontrado) {
-                tablaFrecuencias.add(new ParCaracterFrecuencia(c, 1));
+                tablaFrecuencias.add(new ParCaracterFrecuencia((char) cp, 1));
             }
-        }
+        });
     }
 
     public List<ParCaracterFrecuencia> getTablaFrecuencias() {

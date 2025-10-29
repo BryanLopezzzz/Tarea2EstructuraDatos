@@ -1,14 +1,16 @@
 package org.example.tarea2_estdatos;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmpaquetadorBits {
 
     public void escribirArchivoComprimido(String rutaSalida,
                                           ArrayList<ParCaracterCodigo> tablaCodigos,
-                                          String bitsCodificados,
+                                          byte[] bitsCodificados,
+                                          int numBitsCodificados,
                                           int longitudTextoOriginal) throws IOException {
 
         try (DataOutputStream salida = new DataOutputStream(
@@ -16,81 +18,54 @@ public class EmpaquetadorBits {
 
             salida.writeInt(tablaCodigos.size());
 
-            for (int i = 0; i < tablaCodigos.size(); i++) {
-                ParCaracterCodigo par = tablaCodigos.get(i);
+            for (ParCaracterCodigo par : tablaCodigos) {
                 String caracterStr = String.valueOf(par.getCaracter());
-                byte[] bytesCaracter = caracterStr.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-
+                byte[] bytesCaracter = caracterStr.getBytes(StandardCharsets.UTF_8);
                 salida.writeInt(bytesCaracter.length);
-
                 salida.write(bytesCaracter);
-
-                salida.writeInt(par.getCodigo().length());
-
-                salida.writeUTF(par.getCodigo());
+                salida.writeInt(par.getFrecuencia());
             }
-
             salida.writeInt(longitudTextoOriginal);
+            salida.writeInt(numBitsCodificados);
 
-            salida.writeInt(bitsCodificados.length());
-
-            int numBytes = (bitsCodificados.length() + 7) / 8;
-
-            for (int i = 0; i < numBytes; i++) {
-                int inicioBit = i * 8;
-                int finBit = Math.min(inicioBit + 8, bitsCodificados.length());
-                String byteString = bitsCodificados.substring(inicioBit, finBit);
-
-                while (byteString.length() < 8) {
-                    byteString += "0";
-                }
-
-                byte byteValor = (byte) Integer.parseInt(byteString, 2);
-                salida.writeByte(byteValor);
-            }
+            salida.write(bitsCodificados);
         }
     }
 
     public DatosDescompresion leerArchivoComprimido(String rutaComprimido) throws IOException {
-        ArrayList<ParCaracterCodigo> tablaCodigos = new ArrayList<>();
-        String bitsDesempaquetados;
+        ArrayList<ParCaracterCodigo> tablaCodigos;
+        byte[] bitsDesempaquetados;
 
         try (DataInputStream entrada = new DataInputStream(
                 new BufferedInputStream(new FileInputStream(rutaComprimido)))) {
 
             int numSimbolos = entrada.readInt();
 
+            List<ParCaracterFrecuencia> frecuencias = new ArrayList<>();
             for (int i = 0; i < numSimbolos; i++) {
                 int longitudBytes = entrada.readInt();
-
                 byte[] bytesCaracter = new byte[longitudBytes];
                 entrada.readFully(bytesCaracter);
-
-                String caracterStr = new String(bytesCaracter, java.nio.charset.StandardCharsets.UTF_8);
-                char simbolo = caracterStr.charAt(0);
-
-                int longitudCodigo = entrada.readInt();
-
-                String codigo = entrada.readUTF();
-
-                tablaCodigos.add(new ParCaracterCodigo(simbolo, codigo, 0));
+                char simbolo = new String(bytesCaracter, StandardCharsets.UTF_8).charAt(0);
+                int frecuencia = entrada.readInt();
+                frecuencias.add(new ParCaracterFrecuencia(simbolo, frecuencia));
             }
+
+            ArbolHuffman arbol = new ArbolHuffman();
+            arbol.construirArbol(frecuencias);
+            tablaCodigos = arbol.getTablaCodigos();
+
+            System.out.println("  Árbol de Huffman reconstruido");
+            System.out.println(" " + tablaCodigos.size() + " códigos regenerados");
 
             int longitudOriginal = entrada.readInt();
-
             int numBitsTotales = entrada.readInt();
 
-            StringBuilder bitsTotales = new StringBuilder();
             int numBytes = (numBitsTotales + 7) / 8;
+            byte[] bytesComprimidos = new byte[numBytes];
+            entrada.readFully(bytesComprimidos);
 
-            for (int i = 0; i < numBytes; i++) {
-                byte byteValor = entrada.readByte();
-                String byteString = String.format("%8s",
-                        Integer.toBinaryString(byteValor & 0xFF)).replace(' ', '0');
-                bitsTotales.append(byteString);
-            }
-
-            bitsDesempaquetados = bitsTotales.substring(0, numBitsTotales);
+            bitsDesempaquetados = bytesComprimidos;
         }
 
         return new DatosDescompresion(tablaCodigos, bitsDesempaquetados);
@@ -98,9 +73,9 @@ public class EmpaquetadorBits {
 
     public static class DatosDescompresion {
         private ArrayList<ParCaracterCodigo> tablaCodigos;
-        private String bits;
+        private byte[] bits;
 
-        public DatosDescompresion(ArrayList<ParCaracterCodigo> tablaCodigos, String bits) {
+        public DatosDescompresion(ArrayList<ParCaracterCodigo> tablaCodigos, byte[] bits) {
             this.tablaCodigos = tablaCodigos;
             this.bits = bits;
         }
@@ -109,7 +84,7 @@ public class EmpaquetadorBits {
             return tablaCodigos;
         }
 
-        public String getBits() {
+        public byte[] getBits() {
             return bits;
         }
     }

@@ -1,15 +1,15 @@
 package org.example.tarea2_estdatos;
 
 public class ParCaracterFrecuencia {
-    private char caracter;
+    private int caracter;
     private int frecuencia;
 
-    public ParCaracterFrecuencia(char caracter, int frecuencia) {
+    public ParCaracterFrecuencia(int caracter, int frecuencia) {
         this.caracter = caracter;
         this.frecuencia = frecuencia;
     }
 
-    public char getCaracter() {
+    public int getCaracter() {
         return caracter;
     }
 

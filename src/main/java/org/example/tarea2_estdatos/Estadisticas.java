@@ -22,17 +22,15 @@ public class Estadisticas {
         System.out.println("├──────────────────────────────────────────────────────┤");
 
         if (proporcion <= 100) {
-            String barra = generarBarraCompresion(ahorro);
-            System.out.printf("│  Proporción            →    %6.2f%%                │%n", proporcion);
-            System.out.printf("│  Ahorro                →    %6.2f%%                │%n", ahorro);
-            System.out.printf("│  %s  │%n", barra);
+            System.out.printf("│  Proporción            →      %6.2f%%              │%n", proporcion);
+            System.out.printf("│  Ahorro                →      %6.2f%%              │%n", ahorro);
         } else {
-            System.out.printf("│  Proporción            →    %6.2f%%                │%n", proporcion);
-            System.out.printf("│  Expansión             →    %6.2f%%                │%n", Math.abs(ahorro));
+            System.out.printf("│  Proporción            →      %6.2f%%              │%n", proporcion);
+            System.out.printf("│  Expansión             →      %6.2f%%              │%n", Math.abs(ahorro));
         }
 
         System.out.println("├──────────────────────────────────────────────────────┤");
-        System.out.printf("│  Tiempo                →    %6d ms               │%n", tiempoCompresion);
+        System.out.printf("│  Tiempo                →      %6d ms               │%n", tiempoCompresion);
         System.out.println("└──────────────────────────────────────────────────────┘");
     }
 
@@ -40,15 +38,7 @@ public class Estadisticas {
         System.out.println("\n┌──────────────────────────────────────────────────────┐");
         System.out.println("│  DESCOMPRESIÓN COMPLETADA                            │");
         System.out.println("├──────────────────────────────────────────────────────┤");
-        System.out.printf("│  Tiempo                →    %6d ms               │%n", tiempoDescompresion);
+        System.out.printf("│  Tiempo                →      %6d ms               │%n", tiempoDescompresion);
         System.out.println("└──────────────────────────────────────────────────────┘");
-    }
-
-    private String generarBarraCompresion(double ahorro) {
-        int maxBarras = 40;
-        int filled = (int) Math.min((ahorro / 100.0) * maxBarras, maxBarras);
-        String barraLlena = "█".repeat(filled);
-        String barraVacia = "░".repeat(maxBarras - filled);
-        return barraLlena + barraVacia;
     }
 }
