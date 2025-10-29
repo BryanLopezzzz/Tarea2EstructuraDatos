@@ -39,11 +39,11 @@ public class AnalizadorFrecuencias {
     }
 
     public void mostrarTabla() {
-        System.out.println("\n╔════════════════════════════════════════════════════╗");
-        System.out.println("║          TABLA DE FRECUENCIAS                      ║");
-        System.out.println("╠═══════════════╦════════════╦═══════════════════════╣");
-        System.out.println("║    Símbolo    ║ Frecuencia ║      Porcentaje       ║");
-        System.out.println("╠═══════════════╬════════════╬═══════════════════════╣");
+        System.out.println("\n┌───────────────────────────────────────────────────┐");
+        System.out.println("│  TABLA DE FRECUENCIAS                             │");
+        System.out.println("├──────────────┬─────────────┬──────────────────────┤");
+        System.out.println("│   Símbolo    │  Frecuencia │     Porcentaje       │");
+        System.out.println("├──────────────┼─────────────┼──────────────────────┤");
 
         int total = texto.length();
         ordenarPorFrecuencia();
@@ -54,11 +54,11 @@ public class AnalizadorFrecuencias {
             double porcentaje = (frecuencia * 100.0) / total;
 
             String simboloMostrar = obtenerRepresentacionSimbolo(simbolo);
-            System.out.printf("║ %-13s ║    %4d    ║        %6.2f%%        ║%n",
+            System.out.printf("│  %-10s  │    %5d    │       %6.2f%%        │%n",
                     simboloMostrar, frecuencia, porcentaje);
         }
 
-        System.out.println("╚═══════════════╩════════════╩═══════════════════════╝");
+        System.out.println("└──────────────┴─────────────┴──────────────────────┘");
     }
 
     private void ordenarPorFrecuencia() {
@@ -95,10 +95,10 @@ public class AnalizadorFrecuencias {
     }
 
     private String obtenerRepresentacionSimbolo(char simbolo) {
-        if (simbolo == '\n') return "\\n";
-        if (simbolo == '\t') return "\\t";
-        if (simbolo == '\r') return "\\r";
-        if (simbolo == ' ') return "[espacio]";
+        if (simbolo == '\n') return "↵";
+        if (simbolo == '\t') return "⇥";
+        if (simbolo == '\r') return "⏎";
+        if (simbolo == ' ') return "·espacio";
         return String.valueOf(simbolo);
     }
 }

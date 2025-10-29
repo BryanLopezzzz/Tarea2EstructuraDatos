@@ -32,11 +32,11 @@ public class Codificador {
     }
 
     public void mostrarCodigos(List<ParCaracterFrecuencia> tablaFrecuencias) {
-        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                    CÓDIGOS HUFFMAN                           ║");
-        System.out.println("╠═══════════════╦════════════╦══════════════════╦══════════════╣");
-        System.out.println("║    Símbolo    ║ Frecuencia ║      Código      ║     Bits     ║");
-        System.out.println("╠═══════════════╬════════════╬══════════════════╬══════════════╣");
+        System.out.println("\n┌──────────────────────────────────────────────────────────┐");
+        System.out.println("│  CÓDIGOS HUFFMAN                                         │");
+        System.out.println("├──────────────┬─────────────┬────────────────┬────────────┤");
+        System.out.println("│   Símbolo    │  Frecuencia │     Código     │    Bits    │");
+        System.out.println("├──────────────┼─────────────┼────────────────┼────────────┤");
 
         ordenarPorLongitud();
 
@@ -47,11 +47,19 @@ public class Codificador {
             int frecuencia = buscarFrecuencia(simbolo, tablaFrecuencias);
 
             String simboloMostrar = obtenerRepresentacionSimbolo(simbolo);
-            System.out.printf("║ %-13s ║    %4d    ║   %-12s   ║      %2d      ║%n",
+            String barraProgreso = generarBarraProgreso(codigo.length());
+
+            System.out.printf("│  %-10s  │    %5d    │  %-12s  │     %2d     │%n",
                     simboloMostrar, frecuencia, codigo, codigo.length());
         }
 
-        System.out.println("╚═══════════════╩════════════╩══════════════════╩══════════════╝");
+        System.out.println("└──────────────┴─────────────┴────────────────┴────────────┘");
+    }
+
+    private String generarBarraProgreso(int longitud) {
+        int maxBarra = 10;
+        int filled = Math.min(longitud, maxBarra);
+        return "█".repeat(filled) + "░".repeat(maxBarra - filled);
     }
 
     private int buscarFrecuencia(char caracter, List<ParCaracterFrecuencia> tablaFrecuencias) {
@@ -76,10 +84,10 @@ public class Codificador {
     }
 
     private String obtenerRepresentacionSimbolo(char simbolo) {
-        if (simbolo == '\n') return "\\n";
-        if (simbolo == '\t') return "\\t";
-        if (simbolo == '\r') return "\\r";
-        if (simbolo == ' ') return "[espacio]";
+        if (simbolo == '\n') return "↵";
+        if (simbolo == '\t') return "⇥";
+        if (simbolo == '\r') return "⏎";
+        if (simbolo == ' ') return "·espacio";
         return String.valueOf(simbolo);
     }
 }
