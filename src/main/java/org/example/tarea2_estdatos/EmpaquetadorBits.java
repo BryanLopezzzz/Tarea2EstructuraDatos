@@ -15,10 +15,8 @@ public class EmpaquetadorBits {
         try (DataOutputStream salida = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(rutaSalida)))) {
 
-            // Escribir número de símbolos
             salida.writeInt(tablaCodigos.size());
 
-            // Escribir tabla de símbolos con sus bytes UTF-8 y frecuencias
             for (ParCaracterCodigo par : tablaCodigos) {
                 byte[] bytesCaracter = par.getBytesCaracter();
                 salida.writeInt(bytesCaracter.length);
@@ -26,10 +24,8 @@ public class EmpaquetadorBits {
                 salida.writeInt(par.getFrecuencia());
             }
 
-            // Escribir número total de bits del mensaje comprimido
             salida.writeInt(numBitsCodificados);
 
-            // Escribir bits comprimidos
             salida.write(bitsCodificados);
         }
     }
@@ -42,10 +38,8 @@ public class EmpaquetadorBits {
         try (DataInputStream entrada = new DataInputStream(
                 new BufferedInputStream(new FileInputStream(rutaComprimido)))) {
 
-            // Leer número de símbolos
             int numSimbolos = entrada.readInt();
 
-            // Leer tabla de frecuencias con bytes UTF-8
             List<ParCaracterFrecuenciaBytes> frecuencias = new ArrayList<>();
             for (int i = 0; i < numSimbolos; i++) {
                 int longitudBytes = entrada.readInt();
@@ -55,7 +49,6 @@ public class EmpaquetadorBits {
                 frecuencias.add(new ParCaracterFrecuenciaBytes(bytesCaracter, frecuencia));
             }
 
-            // Reconstruir árbol y códigos Huffman
             ArbolHuffmanBytes arbol = new ArbolHuffmanBytes();
             arbol.construirArbol(frecuencias);
             tablaCodigos = arbol.getTablaCodigos();
@@ -63,10 +56,8 @@ public class EmpaquetadorBits {
             System.out.println("  Árbol de Huffman reconstruido");
             System.out.println("  " + tablaCodigos.size() + " códigos regenerados");
 
-            // Leer número total de bits
             numBitsTotales = entrada.readInt();
 
-            // Leer bits comprimidos
             int numBytes = (numBitsTotales + 7) / 8;
             bitsComprimidos = new byte[numBytes];
             entrada.readFully(bitsComprimidos);

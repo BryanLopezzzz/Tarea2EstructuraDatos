@@ -112,10 +112,10 @@ public class CodificadorBytes {
     }
 
     private String obtenerRepresentacionSimbolo(String simbolo) {
-        if (simbolo.equals("\n")) return "↵";
-        if (simbolo.equals("\t")) return "⇥";
-        if (simbolo.equals("\r")) return "⏎";
-        if (simbolo.equals(" ")) return "·espacio";
+        if (simbolo.equals("\n")) return "enter";
+        if (simbolo.equals("\t")) return "tab";
+        if (simbolo.equals("\r")) return "return";
+        if (simbolo.equals(" ")) return "espacio";
         return simbolo;
     }
 }

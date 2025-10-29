@@ -50,16 +50,16 @@ public class AnalizadorFrecuenciasBytes {
         int b = primerByte & 0xFF;
 
         if ((b & 0x80) == 0) {
-            return 1; // 0xxxxxxx - ASCII
+            return 1;
         } else if ((b & 0xE0) == 0xC0) {
-            return 2; // 110xxxxx - 2 bytes
+            return 2;
         } else if ((b & 0xF0) == 0xE0) {
-            return 3; // 1110xxxx - 3 bytes
+            return 3;
         } else if ((b & 0xF8) == 0xF0) {
-            return 4; // 11110xxx - 4 bytes
+            return 4;
         }
 
-        return 1; // Por defecto
+        return 1;
     }
 
     public List<ParCaracterFrecuenciaBytes> getTablaFrecuencias() {
@@ -128,9 +128,9 @@ public class AnalizadorFrecuenciasBytes {
     }
 
     private String obtenerRepresentacionSimbolo(String simbolo) {
-        if (simbolo.equals("\n")) return "↵";
-        if (simbolo.equals("\t")) return "⇥";
-        if (simbolo.equals("\r")) return "⏎";
+        if (simbolo.equals("\n")) return "enter";
+        if (simbolo.equals("\t")) return "tab";
+        if (simbolo.equals("\r")) return "return";
         if (simbolo.equals(" ")) return "·espacio";
         return simbolo;
     }
