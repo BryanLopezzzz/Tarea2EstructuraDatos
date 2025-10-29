@@ -1,22 +1,16 @@
 package org.example.tarea2_estdatos;
 
-public class ParCaracterCodigo {
+public class ParCaracterFrecuenciaBytes {
     private byte[] bytesCaracter;
-    private String codigo;
     private int frecuencia;
 
-    public ParCaracterCodigo(byte[] bytesCaracter, String codigo, int frecuencia) {
+    public ParCaracterFrecuenciaBytes(byte[] bytesCaracter, int frecuencia) {
         this.bytesCaracter = bytesCaracter;
-        this.codigo = codigo;
         this.frecuencia = frecuencia;
     }
 
     public byte[] getBytesCaracter() {
         return bytesCaracter;
-    }
-
-    public String getCodigo() {
-        return codigo;
     }
 
     public int getFrecuencia() {

@@ -1,5 +1,6 @@
 package org.example.tarea2_estdatos;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class Decodificador {
@@ -9,41 +10,40 @@ public class Decodificador {
         this.tablaCodigos = tablaCodigos;
     }
 
-    public byte[] decodificarBits(byte[] bits) {
-        ArrayList<Byte> textoDescodificado = new ArrayList<>();
+    public byte[] decodificarBitsABytes(byte[] bitsComprimidos, int numBitsTotales) {
+        ArrayList<Byte> bytesResultado = new ArrayList<>();
+        BitLector lector = new BitLector(bitsComprimidos, numBitsTotales);
         StringBuilder codigoActual = new StringBuilder();
 
-        for (int i = 0; i < bits.length; i++) {
-            byte b = bits[i];
+        while (lector.hayMasBits()) {
+            int bit = lector.leerBit();
+            if (bit == -1) break;
 
-            for (int j = 7; j >= 0; j--) {
-                int bit = (b >> j) & 1;
-                codigoActual.append(bit == 1 ? '1' : '0');
+            codigoActual.append(bit == 1 ? '1' : '0');
 
-                byte caracter = buscarCaracter(codigoActual);
-                if (caracter != 0) {
-                    textoDescodificado.add(caracter);
-                    codigoActual.setLength(0);
+            byte[] bytesCaracter = buscarBytesCaracter(codigoActual.toString());
+            if (bytesCaracter != null) {
+                for (byte b : bytesCaracter) {
+                    bytesResultado.add(b);
                 }
+                codigoActual.setLength(0);
             }
         }
 
-        byte[] resultado = new byte[textoDescodificado.size()];
-        for (int i = 0; i < textoDescodificado.size(); i++) {
-            resultado[i] = textoDescodificado.get(i);
+        byte[] resultado = new byte[bytesResultado.size()];
+        for (int i = 0; i < bytesResultado.size(); i++) {
+            resultado[i] = bytesResultado.get(i);
         }
-
         return resultado;
     }
 
-    private byte buscarCaracter(StringBuilder codigo) {
+    private byte[] buscarBytesCaracter(String codigo) {
         for (int i = 0; i < tablaCodigos.size(); i++) {
             ParCaracterCodigo par = tablaCodigos.get(i);
-            String codigoPar = par.getCodigo();
-            if (codigoPar.equals(codigo.toString())) {
-                return (byte) par.getCaracter();
+            if (par.getCodigo().equals(codigo)) {
+                return par.getBytesCaracter();
             }
         }
-        return 0;
+        return null;
     }
 }

@@ -1,15 +1,14 @@
 package org.example.tarea2_estdatos;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 public class Estadisticas {
 
-    public void mostrarEstadisticasCompresion(String textoOriginal,
+    public void mostrarEstadisticasCompresion(byte[] bytesOriginales,
                                               String rutaComprimido,
                                               long tiempoCompresion) {
         File archivoComprimido = new File(rutaComprimido);
-        long tamañoOriginal = textoOriginal.getBytes(StandardCharsets.UTF_8).length;
+        long tamañoOriginal = bytesOriginales.length;
         long tamañoComprimido = archivoComprimido.length();
         double proporcion = (tamañoComprimido * 100.0) / tamañoOriginal;
         double ahorro = 100 - proporcion;

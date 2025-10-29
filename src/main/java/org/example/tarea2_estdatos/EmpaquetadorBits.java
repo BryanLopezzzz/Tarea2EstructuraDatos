@@ -10,74 +10,80 @@ public class EmpaquetadorBits {
     public void escribirArchivoComprimido(String rutaSalida,
                                           ArrayList<ParCaracterCodigo> tablaCodigos,
                                           byte[] bitsCodificados,
-                                          int numBitsCodificados,
-                                          int longitudTextoOriginal) throws IOException {
+                                          int numBitsCodificados) throws IOException {
 
         try (DataOutputStream salida = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(rutaSalida)))) {
 
+            // Escribir número de símbolos
             salida.writeInt(tablaCodigos.size());
 
+            // Escribir tabla de símbolos con sus bytes UTF-8 y frecuencias
             for (ParCaracterCodigo par : tablaCodigos) {
-                String caracterStr = String.valueOf(par.getCaracter());
-                byte[] bytesCaracter = caracterStr.getBytes(StandardCharsets.UTF_8);
+                byte[] bytesCaracter = par.getBytesCaracter();
                 salida.writeInt(bytesCaracter.length);
                 salida.write(bytesCaracter);
                 salida.writeInt(par.getFrecuencia());
             }
-            salida.writeInt(longitudTextoOriginal);
+
+            // Escribir número total de bits del mensaje comprimido
             salida.writeInt(numBitsCodificados);
 
+            // Escribir bits comprimidos
             salida.write(bitsCodificados);
         }
     }
 
     public DatosDescompresion leerArchivoComprimido(String rutaComprimido) throws IOException {
         ArrayList<ParCaracterCodigo> tablaCodigos;
-        byte[] bitsDesempaquetados;
+        byte[] bitsComprimidos;
+        int numBitsTotales;
 
         try (DataInputStream entrada = new DataInputStream(
                 new BufferedInputStream(new FileInputStream(rutaComprimido)))) {
 
+            // Leer número de símbolos
             int numSimbolos = entrada.readInt();
 
-            List<ParCaracterFrecuencia> frecuencias = new ArrayList<>();
+            // Leer tabla de frecuencias con bytes UTF-8
+            List<ParCaracterFrecuenciaBytes> frecuencias = new ArrayList<>();
             for (int i = 0; i < numSimbolos; i++) {
                 int longitudBytes = entrada.readInt();
                 byte[] bytesCaracter = new byte[longitudBytes];
                 entrada.readFully(bytesCaracter);
-                char simbolo = new String(bytesCaracter, StandardCharsets.UTF_8).charAt(0);
                 int frecuencia = entrada.readInt();
-                frecuencias.add(new ParCaracterFrecuencia(simbolo, frecuencia));
+                frecuencias.add(new ParCaracterFrecuenciaBytes(bytesCaracter, frecuencia));
             }
 
-            ArbolHuffman arbol = new ArbolHuffman();
+            // Reconstruir árbol y códigos Huffman
+            ArbolHuffmanBytes arbol = new ArbolHuffmanBytes();
             arbol.construirArbol(frecuencias);
             tablaCodigos = arbol.getTablaCodigos();
 
             System.out.println("  Árbol de Huffman reconstruido");
-            System.out.println(" " + tablaCodigos.size() + " códigos regenerados");
+            System.out.println("  " + tablaCodigos.size() + " códigos regenerados");
 
-            int longitudOriginal = entrada.readInt();
-            int numBitsTotales = entrada.readInt();
+            // Leer número total de bits
+            numBitsTotales = entrada.readInt();
 
+            // Leer bits comprimidos
             int numBytes = (numBitsTotales + 7) / 8;
-            byte[] bytesComprimidos = new byte[numBytes];
-            entrada.readFully(bytesComprimidos);
-
-            bitsDesempaquetados = bytesComprimidos;
+            bitsComprimidos = new byte[numBytes];
+            entrada.readFully(bitsComprimidos);
         }
 
-        return new DatosDescompresion(tablaCodigos, bitsDesempaquetados);
+        return new DatosDescompresion(tablaCodigos, bitsComprimidos, numBitsTotales);
     }
 
     public static class DatosDescompresion {
         private ArrayList<ParCaracterCodigo> tablaCodigos;
         private byte[] bits;
+        private int numBitsTotales;
 
-        public DatosDescompresion(ArrayList<ParCaracterCodigo> tablaCodigos, byte[] bits) {
+        public DatosDescompresion(ArrayList<ParCaracterCodigo> tablaCodigos, byte[] bits, int numBitsTotales) {
             this.tablaCodigos = tablaCodigos;
             this.bits = bits;
+            this.numBitsTotales = numBitsTotales;
         }
 
         public ArrayList<ParCaracterCodigo> getTablaCodigos() {
@@ -86,6 +92,10 @@ public class EmpaquetadorBits {
 
         public byte[] getBits() {
             return bits;
+        }
+
+        public int getNumBitsTotales() {
+            return numBitsTotales;
         }
     }
 }
