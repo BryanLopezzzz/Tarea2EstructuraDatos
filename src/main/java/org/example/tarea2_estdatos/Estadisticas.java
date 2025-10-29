@@ -14,31 +14,41 @@ public class Estadisticas {
         double proporcion = (tamañoComprimido * 100.0) / tamañoOriginal;
         double ahorro = 100 - proporcion;
 
-        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-        System.out.println("║           ESTADÍSTICAS DE COMPRESIÓN                      ║");
-        System.out.println("╠════════════════════════════════════════════════════════════╣");
-        System.out.printf("║  Tamaño original:        %8d bytes                   ║%n", tamañoOriginal);
-        System.out.printf("║  Tamaño comprimido:      %8d bytes                   ║%n", tamañoComprimido);
-        System.out.println("╠════════════════════════════════════════════════════════════╣");
+        System.out.println("\n┌──────────────────────────────────────────────────────┐");
+        System.out.println("│  ESTADÍSTICAS DE COMPRESIÓN                          │");
+        System.out.println("├──────────────────────────────────────────────────────┤");
+        System.out.printf("│  Tamaño original       →  %8d bytes           │%n", tamañoOriginal);
+        System.out.printf("│  Tamaño comprimido     →  %8d bytes           │%n", tamañoComprimido);
+        System.out.println("├──────────────────────────────────────────────────────┤");
 
         if (proporcion <= 100) {
-            System.out.printf("║  Proporción:                  %6.2f%%                    ║%n", proporcion);
-            System.out.printf("║  Ahorro:                      %6.2f%%  ✓                ║%n", ahorro);
+            String barra = generarBarraCompresion(ahorro);
+            System.out.printf("│  Proporción            →    %6.2f%%                │%n", proporcion);
+            System.out.printf("│  Ahorro                →    %6.2f%%                │%n", ahorro);
+            System.out.printf("│  %s  │%n", barra);
         } else {
-            System.out.printf("║  Proporción:                  %6.2f%%                    ║%n", proporcion);
-            System.out.printf("║  Expansión:                   %6.2f%%  ⚠                ║%n", Math.abs(ahorro));
+            System.out.printf("│  Proporción            →    %6.2f%%                │%n", proporcion);
+            System.out.printf("│  Expansión             →    %6.2f%%                │%n", Math.abs(ahorro));
         }
 
-        System.out.println("╠════════════════════════════════════════════════════════════╣");
-        System.out.printf("║  Tiempo de compresión:        %6d ms                   ║%n", tiempoCompresion);
-        System.out.println("╚════════════════════════════════════════════════════════════╝");
+        System.out.println("├──────────────────────────────────────────────────────┤");
+        System.out.printf("│  Tiempo                →    %6d ms               │%n", tiempoCompresion);
+        System.out.println("└──────────────────────────────────────────────────────┘");
     }
 
     public void mostrarEstadisticasDescompresion(long tiempoDescompresion) {
-        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-        System.out.println("║           DESCOMPRESIÓN COMPLETADA                         ║");
-        System.out.println("╠════════════════════════════════════════════════════════════╣");
-        System.out.printf("║  Tiempo de descompresión:     %6d ms                   ║%n", tiempoDescompresion);
-        System.out.println("╚════════════════════════════════════════════════════════════╝");
+        System.out.println("\n┌──────────────────────────────────────────────────────┐");
+        System.out.println("│  DESCOMPRESIÓN COMPLETADA                            │");
+        System.out.println("├──────────────────────────────────────────────────────┤");
+        System.out.printf("│  Tiempo                →    %6d ms               │%n", tiempoDescompresion);
+        System.out.println("└──────────────────────────────────────────────────────┘");
+    }
+
+    private String generarBarraCompresion(double ahorro) {
+        int maxBarras = 40;
+        int filled = (int) Math.min((ahorro / 100.0) * maxBarras, maxBarras);
+        String barraLlena = "█".repeat(filled);
+        String barraVacia = "░".repeat(maxBarras - filled);
+        return barraLlena + barraVacia;
     }
 }
