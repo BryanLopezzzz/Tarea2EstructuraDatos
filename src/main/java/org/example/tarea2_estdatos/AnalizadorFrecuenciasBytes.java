@@ -2,11 +2,12 @@ package org.example.tarea2_estdatos;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AnalizadorFrecuenciasBytes {
-    private List<ParCaracterFrecuenciaBytes> tablaFrecuencias;
+    private List<ParByteFrecuencia> tablaFrecuencias;
     private byte[] bytesTexto;
 
     public AnalizadorFrecuenciasBytes(byte[] bytesTexto) {
@@ -15,7 +16,7 @@ public class AnalizadorFrecuenciasBytes {
     }
 
     public void calcularFrecuencias() {
-        tablaFrecuencias.clear();
+        HashMap<ByteArray, Integer> mapaFrecuencias = new HashMap<>();
 
         int i = 0;
         while (i < bytesTexto.length) {
@@ -25,25 +26,32 @@ public class AnalizadorFrecuenciasBytes {
                 longitudCaracter = 1;
             }
 
-            byte[] bytesCaracter = new byte[longitudCaracter];
-            System.arraycopy(bytesTexto, i, bytesCaracter, 0, longitudCaracter);
+            // Extraer bytes del carácter SIN usar System.arraycopy
+            byte[] bytesCaracter = extraerBytes(bytesTexto, i, longitudCaracter);
 
-            boolean encontrado = false;
-            for (int j = 0; j < tablaFrecuencias.size(); j++) {
-                if (Arrays.equals(tablaFrecuencias.get(j).getBytesCaracter(), bytesCaracter)) {
-                    int nuevaFrecuencia = tablaFrecuencias.get(j).getFrecuencia() + 1;
-                    tablaFrecuencias.set(j, new ParCaracterFrecuenciaBytes(bytesCaracter, nuevaFrecuencia));
-                    encontrado = true;
-                    break;
-                }
-            }
-
-            if (!encontrado) {
-                tablaFrecuencias.add(new ParCaracterFrecuenciaBytes(bytesCaracter, 1));
-            }
+            // Usar wrapper para HashMap
+            ByteArray wrapper = new ByteArray(bytesCaracter);
+            mapaFrecuencias.put(wrapper, mapaFrecuencias.getOrDefault(wrapper, 0) + 1);
 
             i += longitudCaracter;
         }
+
+        // Convertir HashMap a List
+        tablaFrecuencias.clear();
+        for (Map.Entry<ByteArray, Integer> entry : mapaFrecuencias.entrySet()) {
+            tablaFrecuencias.add(new ParByteFrecuencia(
+                    entry.getKey().getBytes(),
+                    entry.getValue()
+            ));
+        }
+    }
+
+    private byte[] extraerBytes(byte[] fuente, int inicio, int longitud) {
+        byte[] resultado = new byte[longitud];
+        for (int i = 0; i < longitud; i++) {
+            resultado[i] = fuente[inicio + i];
+        }
+        return resultado;
     }
 
     private int obtenerLongitudCaracterUTF8(byte primerByte) {
@@ -62,7 +70,7 @@ public class AnalizadorFrecuenciasBytes {
         return 1;
     }
 
-    public List<ParCaracterFrecuenciaBytes> getTablaFrecuencias() {
+    public List<ParByteFrecuencia> getTablaFrecuencias() {
         return tablaFrecuencias;
     }
 
@@ -74,13 +82,13 @@ public class AnalizadorFrecuenciasBytes {
         System.out.println("├──────────────┼─────────────┼──────────────────────┤");
 
         int totalCaracteres = 0;
-        for (ParCaracterFrecuenciaBytes par : tablaFrecuencias) {
+        for (ParByteFrecuencia par : tablaFrecuencias) {
             totalCaracteres += par.getFrecuencia();
         }
 
         ordenarPorFrecuencia();
 
-        for (ParCaracterFrecuenciaBytes par : tablaFrecuencias) {
+        for (ParByteFrecuencia par : tablaFrecuencias) {
             String simbolo = new String(par.getBytesCaracter(), StandardCharsets.UTF_8);
             int frecuencia = par.getFrecuencia();
             double porcentaje = (frecuencia * 100.0) / totalCaracteres;
@@ -98,19 +106,19 @@ public class AnalizadorFrecuenciasBytes {
         tablaFrecuencias = mergeSort(tablaFrecuencias);
     }
 
-    private List<ParCaracterFrecuenciaBytes> mergeSort(List<ParCaracterFrecuenciaBytes> lista) {
+    private List<ParByteFrecuencia> mergeSort(List<ParByteFrecuencia> lista) {
         if (lista.size() <= 1) return lista;
 
         int medio = lista.size() / 2;
-        List<ParCaracterFrecuenciaBytes> izquierda = mergeSort(new ArrayList<>(lista.subList(0, medio)));
-        List<ParCaracterFrecuenciaBytes> derecha = mergeSort(new ArrayList<>(lista.subList(medio, lista.size())));
+        List<ParByteFrecuencia> izquierda = mergeSort(new ArrayList<>(lista.subList(0, medio)));
+        List<ParByteFrecuencia> derecha = mergeSort(new ArrayList<>(lista.subList(medio, lista.size())));
 
         return merge(izquierda, derecha);
     }
 
-    private List<ParCaracterFrecuenciaBytes> merge(List<ParCaracterFrecuenciaBytes> izquierda,
-                                                   List<ParCaracterFrecuenciaBytes> derecha) {
-        List<ParCaracterFrecuenciaBytes> resultado = new ArrayList<>();
+    private List<ParByteFrecuencia> merge(List<ParByteFrecuencia> izquierda,
+                                                   List<ParByteFrecuencia> derecha) {
+        List<ParByteFrecuencia> resultado = new ArrayList<>();
         int i = 0, j = 0;
 
         while (i < izquierda.size() && j < derecha.size()) {
@@ -131,7 +139,7 @@ public class AnalizadorFrecuenciasBytes {
         if (simbolo.equals("\n")) return "enter";
         if (simbolo.equals("\t")) return "tab";
         if (simbolo.equals("\r")) return "return";
-        if (simbolo.equals(" ")) return "·espacio";
+        if (simbolo.equals(" ")) return "espacio";
         return simbolo;
     }
 }

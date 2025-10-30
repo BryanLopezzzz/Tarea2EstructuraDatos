@@ -5,17 +5,18 @@ import java.util.List;
 
 public class ArbolHuffmanBytes {
     private NodoHuffmanBytes raiz;
-    private ArrayList<ParCaracterCodigo> tablaCodigos;
+    private ArrayList<ParByteCodigo> tablaCodigos;
 
     public ArbolHuffmanBytes() {
         tablaCodigos = new ArrayList<>();
     }
 
-    public void construirArbol(List<ParCaracterFrecuenciaBytes> tablaFrecuencias) {
-        ListaNodosBytes listaNodos = new ListaNodosBytes();
+    public void construirArbol(List<ParByteFrecuencia> tablaFrecuencias) {
+        ListaNodos listaNodos = new ListaNodos();
 
+        // Crear nodos hoja para cada carácter UTF-8
         for (int i = 0; i < tablaFrecuencias.size(); i++) {
-            ParCaracterFrecuenciaBytes par = tablaFrecuencias.get(i);
+            ParByteFrecuencia par = tablaFrecuencias.get(i);
             listaNodos.agregar(new NodoHuffmanBytes(par.getBytesCaracter(), par.getFrecuencia()));
         }
 
@@ -43,9 +44,9 @@ public class ArbolHuffmanBytes {
         tablaCodigos.clear();
         if (raiz != null) {
             if (raiz.esHoja()) {
-                tablaCodigos.add(new ParCaracterCodigo(raiz.getBytesCaracter(), "0", raiz.getFrecuencia()));
+                tablaCodigos.add(new ParByteCodigo(raiz.getBytesCaracter(), "0", raiz.getFrecuencia()));
             } else if (raiz.getIzquierdo() != null && raiz.getIzquierdo().esHoja() && raiz.getDerecho() == null) {
-                tablaCodigos.add(new ParCaracterCodigo(raiz.getIzquierdo().getBytesCaracter(), "0", raiz.getFrecuencia()));
+                tablaCodigos.add(new ParByteCodigo(raiz.getIzquierdo().getBytesCaracter(), "0", raiz.getFrecuencia()));
             } else {
                 generarCodigosRecursivo(raiz, "");
             }
@@ -57,7 +58,7 @@ public class ArbolHuffmanBytes {
 
         if (nodo.esHoja()) {
             String codigoFinal = codigo.isEmpty() ? "0" : codigo;
-            tablaCodigos.add(new ParCaracterCodigo(nodo.getBytesCaracter(), codigoFinal, nodo.getFrecuencia()));
+            tablaCodigos.add(new ParByteCodigo(nodo.getBytesCaracter(), codigoFinal, nodo.getFrecuencia()));
             return;
         }
 
@@ -65,7 +66,7 @@ public class ArbolHuffmanBytes {
         generarCodigosRecursivo(nodo.getDerecho(), codigo + "1");
     }
 
-    public ArrayList<ParCaracterCodigo> getTablaCodigos() {
+    public ArrayList<ParByteCodigo> getTablaCodigos() {
         return tablaCodigos;
     }
 

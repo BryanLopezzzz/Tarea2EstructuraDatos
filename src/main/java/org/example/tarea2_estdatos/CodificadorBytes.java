@@ -3,13 +3,21 @@ package org.example.tarea2_estdatos;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class CodificadorBytes {
-    private ArrayList<ParCaracterCodigo> tablaCodigos;
+    private ArrayList<ParByteCodigo> tablaCodigos;
+    private HashMap<ByteArray, String> mapaCodigos;
 
-    public CodificadorBytes(ArrayList<ParCaracterCodigo> tablaCodigos) {
+    public CodificadorBytes(ArrayList<ParByteCodigo> tablaCodigos) {
         this.tablaCodigos = tablaCodigos;
+
+        this.mapaCodigos = new HashMap<>();
+        for (ParByteCodigo par : tablaCodigos) {
+            ByteArray wrapper = new ByteArray(par.getBytesCaracter());
+            mapaCodigos.put(wrapper, par.getCodigo());
+        }
     }
 
     public byte[] codificarBytesABits(byte[] bytesTexto, int[] numBitsOut) {
@@ -23,10 +31,11 @@ public class CodificadorBytes {
                 longitudCaracter = 1;
             }
 
-            byte[] bytesCaracter = new byte[longitudCaracter];
-            System.arraycopy(bytesTexto, i, bytesCaracter, 0, longitudCaracter);
+            byte[] bytesCaracter = extraerBytes(bytesTexto, i, longitudCaracter);
 
-            String codigo = buscarCodigo(bytesCaracter);
+            ByteArray wrapper = new ByteArray(bytesCaracter);
+            String codigo = mapaCodigos.get(wrapper);
+
             if (codigo != null) {
                 for (int j = 0; j < codigo.length(); j++) {
                     bitBuffer.escribirBit(codigo.charAt(j) == '1' ? 1 : 0);
@@ -39,6 +48,14 @@ public class CodificadorBytes {
         bitBuffer.completar();
         numBitsOut[0] = bitBuffer.obtenerTotalBits();
         return bitBuffer.obtenerBytes();
+    }
+
+    private byte[] extraerBytes(byte[] fuente, int inicio, int longitud) {
+        byte[] resultado = new byte[longitud];
+        for (int i = 0; i < longitud; i++) {
+            resultado[i] = fuente[inicio + i];
+        }
+        return resultado;
     }
 
     private int obtenerLongitudCaracterUTF8(byte primerByte) {
@@ -57,16 +74,7 @@ public class CodificadorBytes {
         return 1;
     }
 
-    private String buscarCodigo(byte[] bytesCaracter) {
-        for (int i = 0; i < tablaCodigos.size(); i++) {
-            if (Arrays.equals(tablaCodigos.get(i).getBytesCaracter(), bytesCaracter)) {
-                return tablaCodigos.get(i).getCodigo();
-            }
-        }
-        return null;
-    }
-
-    public void mostrarCodigos(List<ParCaracterFrecuenciaBytes> tablaFrecuencias) {
+    public void mostrarCodigos(List<ParByteFrecuencia> tablaFrecuencias) {
         System.out.println("\n┌──────────────────────────────────────────────────────────┐");
         System.out.println("│  CÓDIGOS HUFFMAN                                         │");
         System.out.println("├──────────────┬─────────────┬────────────────┬────────────┤");
@@ -76,7 +84,7 @@ public class CodificadorBytes {
         ordenarPorLongitud();
 
         for (int i = 0; i < tablaCodigos.size(); i++) {
-            ParCaracterCodigo par = tablaCodigos.get(i);
+            ParByteCodigo par = tablaCodigos.get(i);
             String simbolo = new String(par.getBytesCaracter(), StandardCharsets.UTF_8);
             String codigo = par.getCodigo();
             int frecuencia = buscarFrecuencia(par.getBytesCaracter(), tablaFrecuencias);
@@ -90,7 +98,7 @@ public class CodificadorBytes {
         System.out.println("└──────────────┴─────────────┴────────────────┴────────────┘");
     }
 
-    private int buscarFrecuencia(byte[] bytesCaracter, List<ParCaracterFrecuenciaBytes> tablaFrecuencias) {
+    private int buscarFrecuencia(byte[] bytesCaracter, List<ParByteFrecuencia> tablaFrecuencias) {
         for (int i = 0; i < tablaFrecuencias.size(); i++) {
             if (Arrays.equals(tablaFrecuencias.get(i).getBytesCaracter(), bytesCaracter)) {
                 return tablaFrecuencias.get(i).getFrecuencia();
@@ -103,7 +111,7 @@ public class CodificadorBytes {
         for (int i = 0; i < tablaCodigos.size() - 1; i++) {
             for (int j = 0; j < tablaCodigos.size() - i - 1; j++) {
                 if (tablaCodigos.get(j).getCodigo().length() > tablaCodigos.get(j + 1).getCodigo().length()) {
-                    ParCaracterCodigo temp = tablaCodigos.get(j);
+                    ParByteCodigo temp = tablaCodigos.get(j);
                     tablaCodigos.set(j, tablaCodigos.get(j + 1));
                     tablaCodigos.set(j + 1, temp);
                 }

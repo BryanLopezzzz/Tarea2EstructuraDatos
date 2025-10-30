@@ -3,10 +3,10 @@ package org.example.tarea2_estdatos;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListaNodosBytes {
+public class ListaNodos {
     private List<NodoHuffmanBytes> nodos;
 
-    public ListaNodosBytes() {
+    public ListaNodos() {
         nodos = new ArrayList<>();
     }
 
