@@ -26,17 +26,14 @@ public class AnalizadorFrecuenciasBytes {
                 longitudCaracter = 1;
             }
 
-            // Extraer bytes del carácter SIN usar System.arraycopy
             byte[] bytesCaracter = extraerBytes(bytesTexto, i, longitudCaracter);
 
-            // Usar wrapper para HashMap
-            ByteArray wrapper = new ByteArray(bytesCaracter);
-            mapaFrecuencias.put(wrapper, mapaFrecuencias.getOrDefault(wrapper, 0) + 1);
+            ByteArray aux = new ByteArray(bytesCaracter);
+            mapaFrecuencias.put(aux, mapaFrecuencias.getOrDefault(aux, 0) + 1);
 
             i += longitudCaracter;
         }
 
-        // Convertir HashMap a List
         tablaFrecuencias.clear();
         for (Map.Entry<ByteArray, Integer> entry : mapaFrecuencias.entrySet()) {
             tablaFrecuencias.add(new ParByteFrecuencia(

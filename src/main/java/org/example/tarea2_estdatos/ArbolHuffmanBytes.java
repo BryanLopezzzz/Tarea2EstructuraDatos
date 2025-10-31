@@ -14,7 +14,6 @@ public class ArbolHuffmanBytes {
     public void construirArbol(List<ParByteFrecuencia> tablaFrecuencias) {
         ListaNodos listaNodos = new ListaNodos();
 
-        // Crear nodos hoja para cada carácter UTF-8
         for (int i = 0; i < tablaFrecuencias.size(); i++) {
             ParByteFrecuencia par = tablaFrecuencias.get(i);
             listaNodos.agregar(new NodoHuffmanBytes(par.getBytesCaracter(), par.getFrecuencia()));
@@ -52,7 +51,8 @@ public class ArbolHuffmanBytes {
             }
         }
     }
-
+//Usamos el string, tenía dudas sobre esto pero es para la construcción del árbol Huffman y
+// la búsqueda en memoria
     private void generarCodigosRecursivo(NodoHuffmanBytes nodo, String codigo) {
         if (nodo == null) return;
 

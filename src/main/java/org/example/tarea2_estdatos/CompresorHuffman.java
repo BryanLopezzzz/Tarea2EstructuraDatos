@@ -36,9 +36,7 @@ public class CompresorHuffman {
 
         System.out.println("Guardando archivo comprimido...");
         EmpaquetadorBits empaquetador = new EmpaquetadorBits();
-        empaquetador.escribirArchivoComprimido(
-                rutaSalida,
-                arbol.getTablaCodigos(),
+        empaquetador.escribirArchivoComprimido(rutaSalida, arbol.getTablaCodigos(),
                 bytesCodificados,
                 numBits[0]
         );
@@ -46,7 +44,8 @@ public class CompresorHuffman {
         long tiempoFin = System.currentTimeMillis();
 
         Estadisticas stats = new Estadisticas();
-        stats.mostrarEstadisticasCompresion(bytesOriginales, rutaSalida, tiempoFin - tiempoInicio);
+        stats.mostrarEstadisticasCompresion(bytesOriginales, rutaSalida,
+                tiempoFin - tiempoInicio);
     }
 
     public void descomprimir(String rutaComprimido, String rutaSalida) throws IOException {

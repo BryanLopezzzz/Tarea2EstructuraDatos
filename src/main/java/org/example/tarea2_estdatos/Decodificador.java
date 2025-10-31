@@ -19,9 +19,9 @@ public class Decodificador {
             int bit = lector.leerBit();
             if (bit == -1) break;
 
-            codigoActual.append(bit == 1 ? '1' : '0');
+            codigoActual.append(bit == 1 ? '1' : '0'); //En c++ llegamos a ver el append en los archivos donde
+            //se agregaba al final de él. Aqui es similar, se agrega al final pero del string
 
-            // Buscar si el código actual corresponde a algún carácter
             byte[] bytesCaracter = buscarBytesCaracter(codigoActual.toString());
             if (bytesCaracter != null) {
                 for (byte b : bytesCaracter) {
@@ -31,7 +31,6 @@ public class Decodificador {
             }
         }
 
-        // Convertir ArrayList<Byte> a byte[]
         byte[] resultado = new byte[bytesResultado.size()];
         for (int i = 0; i < bytesResultado.size(); i++) {
             resultado[i] = bytesResultado.get(i);

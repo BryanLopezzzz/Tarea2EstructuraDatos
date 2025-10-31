@@ -31,7 +31,6 @@ public class EmpaquetadorBits {
 
                 salida.writeInt(par.getFrecuencia());
             }
-
             salida.writeInt(numBitsCodificados);
 
             salida.write(bitsCodificados);

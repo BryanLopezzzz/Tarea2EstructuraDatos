@@ -3,7 +3,8 @@ package org.example.tarea2_estdatos;
 import java.util.Arrays;
 
 
-public class ByteArray {
+public class ByteArray { //Clase necesaria para usarla en el HashMap
+    //Y para reconocer bien los UTF8
     private final byte[] bytes;
     private final int hashCode;
 
